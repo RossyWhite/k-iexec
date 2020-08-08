@@ -36,7 +36,7 @@ buildkcmd() {
 iexec() {
   kcmd=$(buildkcmd)
 
-  fzf_options="--ansi --exit-0 --nth 2 --with-nth 1,2"
+  fzf_options="--ansi --exit-0 --nth 2 --with-nth 1,2 --height 40%"
   if [[ -v OPT_QUERY ]]; then fzf_options+=" --query $OPT_QUERY"; fi
 
   read ns pod containers < <(eval $kcmd | awk -v col="${KUBECTL_IEXEC_NS_COLOR}" '{$1=col"["$1"]\033[0m"; print $0}' | fzf $fzf_options | tr -d '[]')
