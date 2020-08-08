@@ -27,7 +27,7 @@ prompt_help () {
 
 buildkcmd() {
   cmd="kubectl get pod"
-  if [[ -v OPT_NS ]]; then cmd+=" -n $OPT_NS"; fi
+  if [[ -v OPT_NS ]]; then cmd+=" -n $OPT_NS"; else cmd+=" -A"; fi
   if [[ -v OPT_CTX ]]; then cmd+=" --context $OPT_CTX"; fi
   cmd+=" --field-selector status.phase=Running -o jsonpath=\"{range .items[*]}{.metadata.namespace}{' '}{.metadata.name}{' '}{.spec.containers[*].name}{'\n'}{end}\""
   echo "$cmd"
