@@ -58,7 +58,7 @@ while (( $# > 0 )); do
       echo ${_KUBECTL_IEXEC_VERSION}
       exit 1
       ;;
-    -n* | --namespace* )
+    -n | --namespace* )
       if [[ "$1" =~ = ]]; then OPT_NS="${1#*=}"; else OPT_NS="$2" && shift; fi
       ;;
     --context* )
