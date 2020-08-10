@@ -29,7 +29,7 @@ buildkcmd() {
   cmd="kubectl get pod"
   if [[ -v OPT_NS ]]; then cmd+=" -n $OPT_NS"; else cmd+=" -A"; fi
   if [[ -v OPT_CTX ]]; then cmd+=" --context $OPT_CTX"; fi
-  cmd+=" --field-selector status.phase=Running -o jsonpath=\"{range .items[*]}{.metadata.namespace}{' '}{.metadata.name}{' '}{.spec.containers[*].name}{'\n'}{end}\""
+  cmd+=" --field-selector status.phase=Running -o jsonpath=\"{range .items[*]}{'${KUBECTL_IEXEC_NS_COLOR}['}{.metadata.namespace}{']\033[0m '}{.metadata.name}{' '}{.spec.containers[*].name}{'\n'}{end}\""
   echo "$cmd"
 }
 
@@ -39,7 +39,7 @@ iexec() {
   fzf_options="--ansi --exit-0 --nth 2 --with-nth 1,2 --height 40%"
   if [[ -v OPT_QUERY ]]; then fzf_options+=" --query $OPT_QUERY"; fi
 
-  read ns pod containers < <(eval $kcmd | awk -v col="${KUBECTL_IEXEC_NS_COLOR}" '{$1=col"["$1"]\033[0m"; print $0}' | fzf $fzf_options | tr -d '[]')
+  read ns pod containers < <(eval $kcmd | fzf $fzf_options | tr -d '[]')
   container=$(echo ${containers} | tr ' ' '\n' | fzf --exit-0 --select-1)
 
   cmd=${OPT_CMD-${KUBECTL_IEXEC_DEFAULT_COMMAND}}
