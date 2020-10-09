@@ -9,8 +9,9 @@ A plugin to perform `kubectl exec` with interactive selector.
 ## Installation
 
 ```bash
-export INSTALL=<yourpath> # anywhere inside $PATH
-curl https://raw.githubusercontent.com/RossyWhite/k-iexec/master/kubectl-iexec -o $INSTALL/kubectl-iexec
+curl -LO https://raw.githubusercontent.com/RossyWhite/k-iexec/v0.0.1/kubectl-iexec
+chmod u+x kubectl-iexec
+mv kubectl-iexec /usr/local/bin
 ```
 
 ## Usage
