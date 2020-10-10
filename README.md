@@ -9,7 +9,7 @@ A plugin to perform `kubectl exec` with interactive selector.
 ## Installation
 
 ```bash
-curl -LO https://raw.githubusercontent.com/RossyWhite/k-iexec/v0.0.1/kubectl-iexec
+curl -LO https://raw.githubusercontent.com/RossyWhite/k-iexec/v0.0.2/kubectl-iexec
 chmod u+x kubectl-iexec
 mv kubectl-iexec /usr/local/bin
 ```
