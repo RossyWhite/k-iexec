@@ -30,7 +30,7 @@ iexec() {
   if [[ -v OPT_CTX ]]; then kcmd+=" --context $OPT_CTX"; fi
   kcmd+=" --field-selector=status.phase=Running -o custom-columns=\"Namespace:.metadata.namespace,NAME:.metadata.name,Containers:.spec.containers[*].name\""
 
-  read ns pod containers < <(eval $kcmd | fzf $fzf_options --prompt "Select Pod: " --query "$OPT_QUERY" --ansi --exit-0 --header-lines=1  --with-nth 1,2 --height 40%)
+  read ns pod containers < <(eval $kcmd | fzf --prompt "Select Pod: " --query "$OPT_QUERY" --ansi --exit-0 --header-lines=1  --with-nth 1,2 --height 40%)
 
   container=$(echo ${containers} | tr ',' '\n' | fzf --exit-0 --select-1 --ansi --prompt "Select Container: ")
 
