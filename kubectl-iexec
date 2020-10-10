@@ -4,7 +4,6 @@ set -eo pipefail
 
 PROGNAME="kubectl iexec"
 KUBECTL_IEXEC_DEFAULT_COMMAND=${KUBECTL_IEXEC_DEFAULT_COMMAND:=/bin/sh}
-KUBECTL_IEXEC_NS_COLOR=${KUBECTL_IEXEC_NS_COLOR:="\033[36m"}
 
 _KUBECTL_IEXEC_VERSION="0.0.1"
 
@@ -25,22 +24,15 @@ prompt_help () {
   printf "See '$PROGNAME --help' for usage.\n"
 }
 
-buildkcmd() {
-  cmd="kubectl get pod"
+iexec() {
+  kcmd="kubectl get pod"
   if [[ -v OPT_NS ]]; then cmd+=" -n $OPT_NS"; else cmd+=" -A"; fi
   if [[ -v OPT_CTX ]]; then cmd+=" --context $OPT_CTX"; fi
-  cmd+=" --field-selector status.phase=Running -o jsonpath=\"{range .items[*]}{'${KUBECTL_IEXEC_NS_COLOR}['}{.metadata.namespace}{']\033[0m '}{.metadata.name}{' '}{.spec.containers[*].name}{'\n'}{end}\""
-  echo "$cmd"
-}
+  kcmd+=" --field-selector=status.phase=Running -o custom-columns=\"Namespace:.metadata.namespace,NAME:.metadata.name,Containers:.spec.containers[*].name\""
 
-iexec() {
-  kcmd=$(buildkcmd)
+  read ns pod containers < <(eval $kcmd | fzf $fzf_options --prompt "Select Pod: " --query "$OPT_QUERY" --ansi --exit-0 --header-lines=1  --with-nth 1,2 --height 40%)
 
-  fzf_options="--ansi --exit-0 --nth 2 --with-nth 1,2 --height 40%"
-  if [[ -v OPT_QUERY ]]; then fzf_options+=" --query $OPT_QUERY"; fi
-
-  read ns pod containers < <(eval $kcmd | fzf $fzf_options | tr -d '[]')
-  container=$(echo ${containers} | tr ' ' '\n' | fzf --exit-0 --select-1)
+  container=$(echo ${containers} | tr ',' '\n' | fzf --exit-0 --select-1 --ansi --prompt "Select Container: ")
 
   cmd=${OPT_CMD-${KUBECTL_IEXEC_DEFAULT_COMMAND}}
   ctx=${OPT_CTX-$(kubectl config current-context)}
