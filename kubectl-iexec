@@ -5,7 +5,7 @@ set -eo pipefail
 PROGNAME="kubectl iexec"
 KUBECTL_IEXEC_DEFAULT_COMMAND=${KUBECTL_IEXEC_DEFAULT_COMMAND:=/bin/sh}
 
-_KUBECTL_IEXEC_VERSION="0.0.1"
+_KUBECTL_IEXEC_VERSION="0.0.2"
 
 show_usage() {
   cat <<_EOS_ 1>&2
