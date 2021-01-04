@@ -26,8 +26,8 @@ prompt_help () {
 
 iexec() {
   kcmd="kubectl get pod"
-  if [[ -v OPT_NS ]]; then kcmd+=" -n $OPT_NS"; else kcmd+=" -A"; fi
-  if [[ -v OPT_CTX ]]; then kcmd+=" --context $OPT_CTX"; fi
+  if [[ ! -z $OPT_NS ]]; then kcmd+=" -n $OPT_NS"; else kcmd+=" -A"; fi
+  if [[ ! -z $OPT_CTX ]]; then kcmd+=" --context $OPT_CTX"; fi
   kcmd+=" --field-selector=status.phase=Running -o custom-columns=\"Namespace:.metadata.namespace,NAME:.metadata.name,Containers:.spec.containers[*].name\""
 
   read ns pod containers < <(eval $kcmd | fzf --prompt "Select Pod: " --query "$OPT_QUERY" --ansi --exit-0 --header-lines=1  --with-nth 1,2 --height 40%)
